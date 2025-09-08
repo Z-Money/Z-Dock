@@ -1,0 +1,15 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    /* justify-content: center; */
+    gap: 2.5%;
+    width: 100%;
+    margin: auto;
+    /* height: calc(100vh - 50px); */
+}
+
+.container > div {
+    width: var(--icon-size);
+    height: min-content;
+}

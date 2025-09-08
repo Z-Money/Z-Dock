@@ -1,0 +1,44 @@
+.li {
+    /* width: 50%; */
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.deleteBtn {
+    position: absolute;
+    display: block;
+    color: red;
+    text-align: center;
+    bottom: -5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.icon {
+    /* width: 143px; */
+    /* height: 165px; */
+    /* width: 100%; */
+    /* height: 100%; */
+    cursor: pointer;
+    padding: 5%;
+    transition: all 0.3s ease-in-out;
+}
+
+.icon:hover {
+    transform: scale(1.05);
+}
+
+.icon img {
+    /* width: 50%; */
+    width: 75px;
+    height: 75px;
+    margin-bottom: 7px;
+    border-radius: 5px;
+    -webkit-user-drag: none;
+}
+
+.iconEditing {
+    cursor: grab;
+}
