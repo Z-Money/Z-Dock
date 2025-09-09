@@ -2,21 +2,28 @@ import { useState } from "react";
 import { uploadIcon } from "../middleware/shortcutService";
 import styles from "./CreateIcon.module.css";
 
-export default function CreateIcon({ shortcuts, setShortcuts, setIsModalOpen, handleModalClick, loggedIn, userId }) {
+export default function CreateIcon({ shortcuts, setShortcuts, setIsModalOpen, loggedIn, userId }) {
     const [name, setName] = useState('');
     const [url, setUrl] = useState('');
     const [iconUrl, setIconUrl] = useState('');
     const [iconFile, setIconFile] = useState('');
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const regex = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
+        const isValidUrl = (urlString) => {
+            try {
+                new URL(urlString);
+                return true;
+            } catch {
+                return false;
+            }
+        }
         let newShortcut = null;
         if (!loggedIn) {
             if (!name || !url || !iconUrl) {
                 alert('Please fill in all required fields.');
                 return;
             }
-            else if (!url.match(regex)) {
+            else if (!isValidUrl(url)) {
                 alert('Please enter a valid URL.');
                 return;
             }

@@ -1,5 +1,5 @@
 import styles from './Shortcut.module.css';
-export default function Shortcut({ id, link, icon_url, name, isEditing, shortcuts, setShortcuts, handleDelete }) {
+export default function Shortcut({ id, link, icon_url, name, isEditing, handleDelete }) {
     const handleClick = (e) => {
         e.preventDefault();
         if (isEditing) return;

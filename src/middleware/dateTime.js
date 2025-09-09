@@ -6,19 +6,6 @@ export function setDateTime() {
     const estHours = d.getHours();
     const estMinutes = d.getMinutes();
 
-    // Set up formatter for timeString
-    const formatter = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/New_York", // EST
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-    });
-
-    // Format time to check period time ranges against
-    const timeString = formatter.format(new Date());
-    const [hours, minutes] = timeString.split(":").map(Number);
-
-
     // Define periods time ranges
     const period1 = { start: { hours: 7, minutes: 30 }, end: { hours: 8, minutes: 20 } };
     const period2 = { start: { hours: 8, minutes: 25 }, end: { hours: 9, minutes: 15 } };

@@ -1,6 +1,5 @@
 // Import from dependencies
 import { useState, useEffect, useRef } from "react"
-import { createClient } from "@supabase/supabase-js";
 
 
 // Import components
@@ -125,7 +124,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange(async (event, session) => {
+    supabase.auth.onAuthStateChange(async (event) => {
       if (event == "PASSWORD_RECOVERY") {
         const newPassword = prompt("What would you like your new password to be?");
         const { data, error } = await supabase.auth
@@ -137,7 +136,7 @@ export default function App() {
   }, []);
 
   const getUserProfile = async () => {
-    const { data: { session }, error } = await supabase.auth.getSession();
+    const { data: { session } } = await supabase.auth.getSession();
 
     if (session?.user) {
       // Fetch extra profile data
@@ -219,10 +218,6 @@ export default function App() {
     }
   };
 
-  useEffect(() => {
-    setFilteredShortcuts(shortcuts);
-  }, [shortcuts]);
-
   function handleEditing() {
     if (searchQuery) return;
     setIsEditing(!isEditing);
@@ -257,14 +252,14 @@ export default function App() {
       return name.includes(query);
     });
     setFilteredShortcuts(filteredShortcuts);
-  }, [searchQuery]);
+  }, [searchQuery, shortcuts]);
 
 
   return (
     <>
       <Modal modalContent={modalContent} isModalOpen={isModalOpen} handleModalClick={handleModalClick} />
-      <Navbar user={user} loggedIn={loggedIn} setLoggedIn={setLoggedIn} isEditing={isEditing} handleEditing={handleEditing} dateTime={dateTime} searchQuery={searchQuery} setSearchQuery={setSearchQuery} setIsModalOpen={setIsModalOpen} handleModalClick={handleModalClick} setModalContent={setModalContent} shortcuts={shortcuts} setShortcuts={setShortcuts} userId={session?.user?.id} />
-      <ShortcutContainer isEditing={isEditing} shortcuts={shortcuts} setShortcuts={setShortcuts} filteredShortcuts={filteredShortcuts} setFilteredShortcuts={setFilteredShortcuts} handleDelete={handleDelete} userId={session?.user?.id} />
+      <Navbar user={user} loggedIn={loggedIn} isEditing={isEditing} handleEditing={handleEditing} dateTime={dateTime} searchQuery={searchQuery} setSearchQuery={setSearchQuery} setIsModalOpen={setIsModalOpen} handleModalClick={handleModalClick} setModalContent={setModalContent} shortcuts={shortcuts} setShortcuts={setShortcuts} userId={session?.user?.id} />
+      <ShortcutContainer isEditing={isEditing} shortcuts={shortcuts} filteredShortcuts={filteredShortcuts} setFilteredShortcuts={setFilteredShortcuts} handleDelete={handleDelete} userId={session?.user?.id} />
     </>
   )
 }

@@ -4,7 +4,7 @@ import supabase from '../middleware/supabase';
 // Import styles
 import styles from "./Profile.module.css"
 
-export default function Profile({ user, handleModalClick, setIsModalOpen }) {
+export default function Profile({ user, setIsModalOpen }) {
     const signOut = () => {
         supabase.auth.signOut();
         setIsModalOpen(false);

@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { updateShortcutOrder } from '../middleware/shortcutService';
 import {
   DndContext,
@@ -18,7 +17,7 @@ import {
 import { SortableItem } from './SortableItem';
 import styles from './SortableContainer.module.css';
 
-export default function ShortcutContainer({ isEditing, shortcuts, setShortcuts, filteredShortcuts, setFilteredShortcuts, handleDelete, userId }) {
+export default function ShortcutContainer({ isEditing, shortcuts, filteredShortcuts, setFilteredShortcuts, handleDelete, userId }) {
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { delay: 100 } }),
@@ -38,7 +37,7 @@ export default function ShortcutContainer({ isEditing, shortcuts, setShortcuts, 
           items={shortcuts}
           strategy={rectSortingStrategy}
         >
-          {filteredShortcuts.map(shortcut => <SortableItem key={shortcut.id} {...shortcut} shortcuts={shortcuts} setShortcuts={setShortcuts} isEditing={isEditing} handleDelete={handleDelete} />)}
+          {filteredShortcuts.map(shortcut => <SortableItem key={shortcut.id} {...shortcut} isEditing={isEditing} handleDelete={handleDelete} />)}
         </SortableContext>
       </DndContext>
     </div>

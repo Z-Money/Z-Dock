@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 import styles from "./Modal.module.css"
 
 export default function Modal({ modalContent, isModalOpen, handleModalClick }) {

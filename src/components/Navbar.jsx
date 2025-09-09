@@ -1,4 +1,3 @@
-import { setDateTime } from '../middleware/dateTime';
 import styles from './Navbar.module.css';
 import { FaRegEdit } from "react-icons/fa";
 import { MdOutlineAddBox } from "react-icons/md";
@@ -8,16 +7,16 @@ import Profile from './Profile';
 import CreateIcon from './CreateIcon';
 import { Auth } from './Auth';
 
-export default function Navbar({ user, loggedIn, setLoggedIn, isEditing, handleEditing, dateTime, searchQuery, setSearchQuery, setIsModalOpen, handleModalClick, setModalContent, shortcuts, setShortcuts, userId }) {
+export default function Navbar({ user, loggedIn, isEditing, handleEditing, dateTime, searchQuery, setSearchQuery, setIsModalOpen, handleModalClick, setModalContent, shortcuts, setShortcuts, userId }) {
     const handleAddShortcut = () => {
         if (searchQuery || isEditing) return;
         handleModalClick();
-        setModalContent(<CreateIcon shortcuts={shortcuts} setShortcuts={setShortcuts} setIsModalOpen={setIsModalOpen} handleModalClick={handleModalClick} loggedIn={loggedIn} userId={userId} />);
+        setModalContent(<CreateIcon shortcuts={shortcuts} setShortcuts={setShortcuts} setIsModalOpen={setIsModalOpen} loggedIn={loggedIn} userId={userId} />);
     }
     
     const handleUserIconClick = () => {
         handleModalClick();
-        setModalContent(loggedIn ? <Profile user={user} handleModalClick={handleModalClick} setIsModalOpen={setIsModalOpen} /> : <Auth setModalContent={setModalContent} handleModalClick={handleModalClick} setIsModalOpen={setIsModalOpen} />);
+        setModalContent(loggedIn ? <Profile user={user} setIsModalOpen={setIsModalOpen} /> : <Auth setModalContent={setModalContent} handleModalClick={handleModalClick} setIsModalOpen={setIsModalOpen} />);
     }
 
     return (

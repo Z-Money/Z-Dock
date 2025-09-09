@@ -13,13 +13,13 @@ export function Auth({ setModalContent, handleModalClick, setIsModalOpen }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
             alert(error.message);
             return;
         }
         setIsModalOpen(false);
-    }
+    };
 
     const handleForgotPassword = () => {
         setModalContent(<ForgotPassword setModalContent={setModalContent} handleModalClick={handleModalClick} setIsModalOpen={setIsModalOpen} />);
@@ -142,7 +142,7 @@ export function ForgotPassword({ setModalContent, handleModalClick, setIsModalOp
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
             redirectTo: window.location.origin
         });
         if (error) {
