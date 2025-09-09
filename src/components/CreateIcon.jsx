@@ -26,7 +26,8 @@ export default function CreateIcon({ shortcuts, setShortcuts, setIsModalOpen, ha
                 icon_url: iconUrl,
                 link: url,
                 orderIndex: shortcuts.length + 1
-            }
+            };
+            localStorage.setItem("shortcuts", JSON.stringify([...shortcuts, newShortcut]));
         }
         else {
             if (iconUrl && iconFile) {
@@ -58,12 +59,12 @@ export default function CreateIcon({ shortcuts, setShortcuts, setIsModalOpen, ha
             }
         }
 
-        localStorage.setItem("shortcuts", JSON.stringify([...shortcuts, newShortcut]));
         setShortcuts([...shortcuts, newShortcut]);
         setName('');
         setUrl('');
         setIconUrl('');
         setIconFile('');
+        if (loggedIn) document.querySelector('#iconFileUpload').value = '';
         setIsModalOpen(false);
     }
 
@@ -86,7 +87,7 @@ export default function CreateIcon({ shortcuts, setShortcuts, setIsModalOpen, ha
                 {loggedIn &&
                     <div className={styles.inputGroup}>
                         <label className={styles.label}>Icon (File)</label>
-                        <input type="file" onChange={(e) => { setIconFile(e.target.files[0]) }} className={styles.input} accept="image/*" />
+                        <input id='iconFileUpload' type="file" onChange={(e) => { setIconFile(e.target.files[0]) }} className={styles.input} accept="image/*" />
                     </div>}
                 <button type="submit" className={styles.submitBtn}>Create</button>
             </form>

@@ -171,17 +171,19 @@ export default function App() {
       if (session?.user) {
         const dbShortcuts = await getShortcuts(session.user.id);
         setShortcuts(dbShortcuts);
-        setFilteredShortcuts(dbShortcuts);
-      } else {
-        const savedShortcuts = JSON.parse(localStorage.getItem("shortcuts"));
+      }
+      else {
+        const savedShortcuts = localStorage.getItem("shortcuts");
         if (savedShortcuts) {
-          setShortcuts(savedShortcuts);
-          setFilteredShortcuts(savedShortcuts);
-        } else {
-          localStorage.setItem("shortcuts", JSON.stringify(shortcuts));
+          setShortcuts(JSON.parse(savedShortcuts));
+        }
+        else {
+          const portfolio = [{ id: crypto.randomUUID(), name: "Portfolio", icon_url: "https://zachariah-kersey.web.app/images/apple-touch-icon.png", link: "https://zachariah-kersey.web.app/", orderIndex: 0 }];
+          localStorage.setItem("shortcuts", JSON.stringify(portfolio));
+          setShortcuts(portfolio);
         }
       }
-      hasLoaded.current = true; // ✅ mark that we've done the initial fetch
+      hasLoaded.current = true;
     };
 
     loadShortcuts();
@@ -189,7 +191,7 @@ export default function App() {
 
   // Save whenever shortcuts change (but not on first load)
   useEffect(() => {
-    if (!hasLoaded.current) return; // ⛔ skip first render
+    if (hasLoaded.current) return; // ⛔ skip first render
 
     const save = async () => {
       if (session?.user) {
@@ -208,7 +210,10 @@ export default function App() {
       if (session?.user) {
         await deleteShortcut(session.user.id, id);
       }
-      localStorage.setItem("shortcuts", JSON.stringify(shortcuts.filter(s => s.id !== id)));
+      else {
+        localStorage.setItem("shortcuts", JSON.stringify(shortcuts));
+        console.log(localStorage.getItem("shortcuts"));
+      }
     } catch (err) {
       console.error("Failed to delete shortcut:", err);
     }

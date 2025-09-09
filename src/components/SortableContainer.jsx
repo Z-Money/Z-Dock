@@ -56,7 +56,9 @@ export default function ShortcutContainer({ isEditing, shortcuts, setShortcuts, 
         if (userId) {
           updateShortcutOrder(userId, updated);
         }
-        localStorage.setItem('shortcuts', JSON.stringify(updated));
+        else {
+          localStorage.setItem('shortcuts', JSON.stringify(updated));
+        }
         return updated;
       });
     }
