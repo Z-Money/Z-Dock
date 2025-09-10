@@ -1,3 +1,6 @@
+// Import components
+import ThemePicker from './ThemePicker';
+
 // Import from middleware
 import supabase from '../middleware/supabase';
 
@@ -14,6 +17,8 @@ export default function Profile({ user, setIsModalOpen }) {
             <h2>Profile</h2>
             <p>Name: {user.name}</p>
             <p>Email: {user.email}</p>
+            <h2>Navigation Colors</h2>
+            <ThemePicker user={user} />
             <button onClick={signOut}>Sign Out</button>
         </div>
     )

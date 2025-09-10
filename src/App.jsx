@@ -11,6 +11,7 @@ import Modal from "./components/Modal"
 import { setDateTime } from "./middleware/dateTime"
 import supabase from "./middleware/supabase"
 import { getShortcuts, saveShortcuts, deleteShortcut } from "./middleware/shortcutService"
+import { colorThemes, applyTheme } from "./middleware/profileTheme"
 
 // Main App
 export default function App() {
@@ -217,6 +218,12 @@ export default function App() {
       console.error("Failed to delete shortcut:", err);
     }
   };
+
+  useEffect(() => {
+    if (user?.background_color && colorThemes[user.background_color]) {
+      applyTheme(colorThemes[user.background_color]);
+    }
+  }, [user?.background_color]);
 
   function handleEditing() {
     if (searchQuery) return;
