@@ -10,12 +10,13 @@ import supabase from '../middleware/supabase';
 export function Auth({ setModalContent, handleModalClick, setIsModalOpen }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errorText, setErrorText] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
-            alert(error.message);
+            setErrorText(error.message);
             return;
         }
         setIsModalOpen(false);
@@ -35,7 +36,7 @@ export function Auth({ setModalContent, handleModalClick, setIsModalOpen }) {
             <form className={styles.form} onSubmit={handleSubmit}>
                 <div className={styles.inputGroup}>
                     <label className={styles.label}>Email</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required />
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                 </div>
                 <div className={styles.inputGroup}>
                     <label className={styles.label}>Password</label>
@@ -43,6 +44,7 @@ export function Auth({ setModalContent, handleModalClick, setIsModalOpen }) {
                 </div>
                 <span onClick={handleForgotPassword} className={styles.forgotPassword}>Forgot Password?</span>
                 <button type="submit" className={styles.submitBtn}>Login</button>
+                <p className={styles.errorText}>{errorText}</p>
                 <span className={styles.signupText}>Don't have an account?&nbsp;<span onClick={handleSignup} className={styles.signup}>Signup</span>
                 </span>
             </form>
@@ -55,23 +57,23 @@ export function Signup({ setModalContent, handleModalClick, setIsModalOpen }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [errorText, setErrorText] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
-            alert("Passwords do not match!");
+            setErrorText("Passwords do not match!");
             return;
         }
         const { data, error } = await supabase.auth.signUp({ email, password });
         if (error) {
-            alert(error.message);
+            setErrorText(error.message);
             return;
         }
 
         const userId = data?.user?.id;
         if (!userId) {
-            console.error("No user ID returned after signup:", data);
-            alert("Could not create user. Please try again.");
+            setErrorText("Could not create user. Please try again.");
             return;
         }
 
@@ -81,12 +83,12 @@ export function Signup({ setModalContent, handleModalClick, setIsModalOpen }) {
             .eq("id", userId);
 
         if (updateError) {
-            console.error("Error updating user name:", updateError);
+            setErrorText.error("Error updating user name:", updateError);
         }
 
         const shortcuts = JSON.parse(localStorage.getItem("shortcuts")) || [];
         if (shortcuts.length > 0) {
-            const { error: insertError } = await supabase.from("shortcuts").insert(
+            await supabase.from("shortcuts").insert(
                 shortcuts.map((s, idx) => ({
                     user_id: userId,
                     name: s.name,
@@ -95,10 +97,6 @@ export function Signup({ setModalContent, handleModalClick, setIsModalOpen }) {
                     order_index: idx,
                 }))
             );
-
-            if (insertError) {
-                console.error("Error inserting shortcuts:", insertError);
-            }
         }
         setIsModalOpen(false);
     }
@@ -117,7 +115,7 @@ export function Signup({ setModalContent, handleModalClick, setIsModalOpen }) {
                 </div>
                 <div className={styles.inputGroup}>
                     <label className={styles.label}>Email</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required />
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                 </div>
                 <div className={styles.inputGroup}>
                     <label className={styles.label}>Password</label>
@@ -128,6 +126,7 @@ export function Signup({ setModalContent, handleModalClick, setIsModalOpen }) {
                     <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
                 </div>
                 <button type="submit" className={styles.submitBtn}>Signup</button>
+                <p className={styles.errorText}>{errorText}</p>
                 <span className={styles.signupText}>
                     Already have an account?&nbsp;
                     <span onClick={handleLogin} className={styles.signup}>Login</span>
@@ -139,18 +138,22 @@ export function Signup({ setModalContent, handleModalClick, setIsModalOpen }) {
 
 export function ForgotPassword({ setModalContent, handleModalClick, setIsModalOpen }) {
     const [email, setEmail] = useState('');
+    const [errorText, setErrorText] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const regex = /^[\w.-]+@([\w-]+\.)+[\w-]{2,4}$/g;
+        if (!email.match(regex)) {
+            setErrorText("Invalid email.");
+        }
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
             redirectTo: window.location.origin
         });
         if (error) {
-            alert(error.message);
+            setErrorText(error.message);
             return;
         } else {
-            alert("Password reset email sent! Please check your inbox.");
-            setIsModalOpen(false);
+            setErrorText("Password reset email sent! Please check your inbox.");
             handleBackToLogin();
         }
     }
@@ -165,10 +168,10 @@ export function ForgotPassword({ setModalContent, handleModalClick, setIsModalOp
             <form className={styles.form} onSubmit={handleSubmit}>
                 <div className={styles.inputGroup}>
                     <label className={styles.label}>Email</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required
-                    />
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                 </div>
                 <button type="submit" className={styles.submitBtn}>Reset Password</button>
+                <p className={styles.errorText}>{errorText}</p>
                 <span className={styles.signupText}>
                     Already have an account?&nbsp;
                     <span onClick={handleBackToLogin} className={styles.signup}>

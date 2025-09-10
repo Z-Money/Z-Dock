@@ -66,6 +66,12 @@
     text-decoration: underline;
 }
 
+.errorText {
+    color: #dc143c;
+    text-align: center;
+    font-weight: 600;
+}
+
 @media screen and (max-width: 768px) {
     .form {
         width: 80%;

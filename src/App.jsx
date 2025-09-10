@@ -148,9 +148,7 @@ export default function App() {
         .single();
 
 
-      if (error) {
-        // console.error("Error loading user profile:", error);
-      } else {
+      if (!error) {
         setUser(profile);
       }
     } else {
@@ -212,10 +210,9 @@ export default function App() {
       }
       else {
         localStorage.setItem("shortcuts", JSON.stringify(shortcuts));
-        console.log(localStorage.getItem("shortcuts"));
       }
-    } catch (err) {
-      console.error("Failed to delete shortcut:", err);
+    } catch {
+      alert("Failed to delete shortcut!");
     }
   };
 
