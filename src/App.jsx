@@ -16,6 +16,7 @@ import { colorThemes, applyTheme } from "./middleware/profileTheme"
 // Main App
 export default function App() {
   const [session, setSession] = useState(null);
+  const [sessionChecked, setSessionChecked] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState({
     id: null,
@@ -109,12 +110,14 @@ export default function App() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      setSessionChecked(true);
       setLoggedIn(!!session);
       getUserProfile();
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      setSessionChecked(true);
       setLoggedIn(!!session);
       getUserProfile();
     });
@@ -138,7 +141,6 @@ export default function App() {
 
   const getUserProfile = async () => {
     const { data: { session } } = await supabase.auth.getSession();
-
     if (session?.user) {
       // Fetch extra profile data
       const { data: profile, error } = await supabase
@@ -163,44 +165,53 @@ export default function App() {
     }
   };
 
-  // Load shortcuts on login or fallback to localStorage
+  // Load shortcuts when session changes
   useEffect(() => {
+    if (!sessionChecked) return; // ⛔ wait until session is resolved
+
+    const defaultShortcut = [
+      {
+        id: crypto.randomUUID(),
+        name: "Portfolio",
+        icon_url: "https://zachariah-kersey.web.app/images/apple-touch-icon.png",
+        link: "https://zachariah-kersey.web.app/",
+        orderIndex: 0,
+      },
+    ];
+
     const loadShortcuts = async () => {
+      hasLoaded.current = false;
       if (session?.user) {
         const dbShortcuts = await getShortcuts(session.user.id);
-        setShortcuts(dbShortcuts);
-      }
-      else {
-        const savedShortcuts = localStorage.getItem("shortcuts");
-        if (savedShortcuts) {
-          setShortcuts(JSON.parse(savedShortcuts));
-        }
-        else {
-          const portfolio = [{ id: crypto.randomUUID(), name: "Portfolio", icon_url: "https://zachariah-kersey.web.app/images/apple-touch-icon.png", link: "https://zachariah-kersey.web.app/", orderIndex: 0 }];
-          localStorage.setItem("shortcuts", JSON.stringify(portfolio));
-          setShortcuts(portfolio);
+        setShortcuts(dbShortcuts ?? []); // ✅ replace guest shortcuts
+      } else {
+        const saved = localStorage.getItem("shortcuts");
+        if (saved) {
+          setShortcuts(JSON.parse(saved));
+        } else {
+          setShortcuts(defaultShortcut);
+          localStorage.setItem("shortcuts", JSON.stringify(defaultShortcut));
         }
       }
+
       hasLoaded.current = true;
     };
 
     loadShortcuts();
-  }, [session]);
+  }, [session, sessionChecked]);
+
 
   // Save whenever shortcuts change (but not on first load)
   useEffect(() => {
-    if (hasLoaded.current) return; // ⛔ skip first render
+    if (!hasLoaded.current) return;
 
-    const save = async () => {
-      if (session?.user) {
-        await saveShortcuts(session.user.id, shortcuts);
-      } else {
-        localStorage.setItem("shortcuts", JSON.stringify(shortcuts));
-      }
-    };
-
-    save();
+    if (session?.user) {
+      saveShortcuts(session.user.id, shortcuts);
+    } else {
+      localStorage.setItem("shortcuts", JSON.stringify(shortcuts));
+    }
   }, [shortcuts, session]);
+
 
   const handleDelete = async (id) => {
     try {
