@@ -30,6 +30,6 @@ To run this project, you will need to add the following environment variables to
 - Upload custom icons
 ## Tech Stack
 
-**Client:** React, React-Icons, Firebase
+**Client:** React, dnd-kit, React-Icons, Firebase Hosting
 
-**Backend:** Supabase
+**Backend:** Supabase (Auth, Storage, Database)
